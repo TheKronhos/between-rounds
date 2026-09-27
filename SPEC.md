@@ -1,4 +1,4 @@
-# Build Prompt: "Fuel", a Nutrition Companion App
+# Build Prompt: "Between Rounds", a Nutrition Companion App
 
 ## What we're building
 

@@ -8,12 +8,12 @@ export interface MetaRow {
   value: unknown;
 }
 
-class FuelDB extends Dexie {
+class BetweenRoundsDB extends Dexie {
   bundles!: EntityTable<StoredBundle, 'id'>;
   meta!: EntityTable<MetaRow, 'key'>;
 
   constructor() {
-    super('fuel');
+    super('between-rounds');
     this.version(1).stores({
       bundles: '++id, plan_id, imported_at, valid_from, valid_to',
       meta: '&key',
@@ -21,7 +21,7 @@ class FuelDB extends Dexie {
   }
 }
 
-export const db = new FuelDB();
+export const db = new BetweenRoundsDB();
 
 /**
  * Store a validated bundle and make it the active plan.

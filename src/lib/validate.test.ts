@@ -94,7 +94,7 @@ describe('validateBundle', () => {
   });
 
   it('rejects a backup or non-plan file', () => {
-    expect(validateBundle({ bundle_type: 'fuel_backup' }).ok).toBe(false);
+    expect(validateBundle({ bundle_type: 'between_rounds_backup' }).ok).toBe(false);
     expect(validateBundle([]).ok).toBe(false);
   });
 });
