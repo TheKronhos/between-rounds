@@ -1,0 +1,346 @@
+{
+  "bundle_type": "nutrition_plan",
+  "data_version": "1.0",
+  "plan_id": "sample-week-2026-09-27",
+  "valid_from": "2026-09-27",
+  "valid_to": "2026-10-03",
+  "targets": {
+    "day_types": {
+      "hard":     { "label": "Hard day",     "kcal": 2600, "protein_g": 190, "carbs_g": [250, 290], "fat_g": [65, 85], "fiber_g": 35 },
+      "moderate": { "label": "Moderate day", "kcal": 2350, "protein_g": 190, "carbs_g": [180, 220], "fat_g": [65, 85], "fiber_g": 35 },
+      "recovery": { "label": "Recovery day", "kcal": 2150, "protein_g": 190, "carbs_g": [150, 180], "fat_g": [65, 85], "fiber_g": 35 }
+    },
+    "hydration_oz": { "base": [100, 120], "training_add": [20, 30] },
+    "portion_guide": {
+      "palm_protein":     { "kcal": 150, "protein_g": 28, "carbs_g": 0,  "fat_g": 5 },
+      "fist_veg":         { "kcal": 25,  "protein_g": 1,  "carbs_g": 5,  "fat_g": 0 },
+      "cupped_hand_carb": { "kcal": 120, "protein_g": 3,  "carbs_g": 25, "fat_g": 1 },
+      "thumb_fat":        { "kcal": 100, "protein_g": 0,  "carbs_g": 0,  "fat_g": 11 }
+    }
+  },
+  "days": [
+    {
+      "date": "2026-09-27", "day_type": "moderate", "training": true,
+      "meals": [
+        { "slot": "breakfast", "time": "07:00", "recipe_id": "protein-overnight-oats", "variant": null, "servings": 1, "kcal": 520, "protein_g": 45, "carbs_g": 60, "fat_g": 12, "son_plate": null, "notes": "" },
+        { "slot": "lunch", "time": "11:00", "recipe_id": "turkey-club-wraps", "variant": null, "servings": 1, "kcal": 850, "protein_g": 75, "carbs_g": 35, "fat_g": 45, "son_plate": "1 wrap, fruit on the side", "notes": "" },
+        { "slot": "pre-training", "time": "15:30", "recipe_id": "greek-yogurt-bowl", "variant": null, "servings": 1, "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8, "son_plate": null, "notes": "Eat 60–90 min before the gym." },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "sheet-pan-salmon", "variant": null, "servings": 1, "kcal": 620, "protein_g": 45, "carbs_g": 45, "fat_g": 26, "son_plate": "Half a fillet, extra potatoes", "notes": "" }
+      ]
+    },
+    {
+      "date": "2026-09-28", "day_type": "hard", "training": true,
+      "meals": [
+        { "slot": "breakfast", "time": "07:00", "recipe_id": "protein-overnight-oats", "variant": "hard", "servings": 1, "kcal": 620, "protein_g": 46, "carbs_g": 85, "fat_g": 12, "son_plate": null, "notes": "" },
+        { "slot": "lunch", "time": "11:00", "recipe_id": "salsa-chicken-bowl", "variant": "hard", "servings": 1, "kcal": 800, "protein_g": 62, "carbs_g": 100, "fat_g": 16, "son_plate": null, "notes": "" },
+        { "slot": "pre-training", "time": "15:30", "recipe_id": "greek-yogurt-bowl", "variant": null, "servings": 1, "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8, "son_plate": null, "notes": "" },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "ip-salsa-chicken", "variant": null, "servings": 2, "kcal": 660, "protein_g": 100, "carbs_g": 6, "fat_g": 26, "son_plate": "1 palm in a quesadilla", "notes": "Serve with a big salad and 1 cup rice." }
+      ]
+    },
+    {
+      "date": "2026-09-29", "day_type": "recovery", "training": false,
+      "meals": [
+        { "slot": "breakfast", "time": "07:30", "recipe_id": "veggie-egg-scramble", "variant": null, "servings": 1, "kcal": 480, "protein_g": 42, "carbs_g": 20, "fat_g": 26, "son_plate": null, "notes": "" },
+        { "slot": "lunch", "time": "11:30", "recipe_id": "salsa-chicken-bowl", "variant": "recovery", "servings": 1, "kcal": 600, "protein_g": 58, "carbs_g": 50, "fat_g": 16, "son_plate": null, "notes": "" },
+        { "slot": "snack", "time": "15:00", "recipe_id": "greek-yogurt-bowl", "variant": null, "servings": 1, "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8, "son_plate": null, "notes": "" },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "sheet-pan-salmon", "variant": null, "servings": 1, "kcal": 620, "protein_g": 45, "carbs_g": 45, "fat_g": 26, "son_plate": "Half a fillet", "notes": "" }
+      ]
+    },
+    {
+      "date": "2026-09-30", "day_type": "hard", "training": true,
+      "meals": [
+        { "slot": "breakfast", "time": "07:00", "recipe_id": "protein-overnight-oats", "variant": "hard", "servings": 1, "kcal": 620, "protein_g": 46, "carbs_g": 85, "fat_g": 12, "son_plate": null, "notes": "" },
+        { "slot": "lunch", "time": "11:00", "recipe_id": "turkey-club-wraps", "variant": null, "servings": 1, "kcal": 850, "protein_g": 75, "carbs_g": 35, "fat_g": 45, "son_plate": null, "notes": "" },
+        { "slot": "pre-training", "time": "15:30", "recipe_id": "greek-yogurt-bowl", "variant": null, "servings": 1, "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8, "son_plate": null, "notes": "" },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "salsa-chicken-bowl", "variant": "hard", "servings": 1, "kcal": 800, "protein_g": 62, "carbs_g": 100, "fat_g": 16, "son_plate": "Kid bowl: rice, chicken, cheese", "notes": "" }
+      ]
+    },
+    {
+      "date": "2026-10-01", "day_type": "moderate", "training": true,
+      "meals": [
+        { "slot": "breakfast", "time": "07:00", "recipe_id": "veggie-egg-scramble", "variant": null, "servings": 1, "kcal": 480, "protein_g": 42, "carbs_g": 20, "fat_g": 26, "son_plate": null, "notes": "Add 1 slice toast." },
+        { "slot": "lunch", "time": "11:00", "recipe_id": "salsa-chicken-bowl", "variant": null, "servings": 1, "kcal": 700, "protein_g": 60, "carbs_g": 75, "fat_g": 16, "son_plate": null, "notes": "" },
+        { "slot": "pre-training", "time": "15:30", "recipe_id": "greek-yogurt-bowl", "variant": null, "servings": 1, "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8, "son_plate": null, "notes": "" },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "sheet-pan-salmon", "variant": null, "servings": 1, "kcal": 620, "protein_g": 45, "carbs_g": 45, "fat_g": 26, "son_plate": "Half a fillet", "notes": "" }
+      ]
+    },
+    {
+      "date": "2026-10-02", "day_type": "recovery", "training": false,
+      "meals": [
+        { "slot": "breakfast", "time": "07:30", "recipe_id": "protein-overnight-oats", "variant": null, "servings": 1, "kcal": 520, "protein_g": 45, "carbs_g": 60, "fat_g": 12, "son_plate": null, "notes": "" },
+        { "slot": "lunch", "time": "11:30", "recipe_id": "turkey-club-wraps", "variant": null, "servings": 1, "kcal": 850, "protein_g": 75, "carbs_g": 35, "fat_g": 45, "son_plate": null, "notes": "" },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "ip-salsa-chicken", "variant": null, "servings": 2, "kcal": 660, "protein_g": 100, "carbs_g": 6, "fat_g": 26, "son_plate": "Quesadilla night", "notes": "Big salad on the side." }
+      ]
+    },
+    {
+      "date": "2026-10-03", "day_type": "hard", "training": true,
+      "meals": [
+        { "slot": "breakfast", "time": "08:00", "recipe_id": "veggie-egg-scramble", "variant": null, "servings": 1, "kcal": 480, "protein_g": 42, "carbs_g": 20, "fat_g": 26, "son_plate": "Pancakes with dad", "notes": "" },
+        { "slot": "lunch", "time": "11:30", "recipe_id": "salsa-chicken-bowl", "variant": "hard", "servings": 1, "kcal": 800, "protein_g": 62, "carbs_g": 100, "fat_g": 16, "son_plate": null, "notes": "" },
+        { "slot": "pre-training", "time": "15:00", "recipe_id": "greek-yogurt-bowl", "variant": null, "servings": 1, "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8, "son_plate": null, "notes": "" },
+        { "slot": "dinner", "time": "18:30", "recipe_id": "sheet-pan-salmon", "variant": null, "servings": 1.5, "kcal": 930, "protein_g": 68, "carbs_g": 68, "fat_g": 39, "son_plate": "Half a fillet", "notes": "" }
+      ]
+    }
+  ],
+  "recipes": [
+    {
+      "id": "ip-salsa-chicken",
+      "name": "IP Salsa Chicken",
+      "tags": ["instant-pot", "batch", "family"],
+      "yield_servings": 7,
+      "active_min": 10,
+      "total_min": 45,
+      "ingredients": [
+        { "item": "Boneless skinless chicken thighs", "qty": 3, "unit": "lb", "section": "Meat & Seafood" },
+        { "item": "Salsa verde", "qty": 16, "unit": "oz", "section": "Pantry" },
+        { "item": "Taco seasoning", "qty": 2, "unit": "tbsp", "section": "Pantry" },
+        { "item": "Water", "qty": 0.5, "unit": "cup", "section": "Other" }
+      ],
+      "steps": [
+        { "text": "Add water to the Instant Pot, then chicken. Sprinkle seasoning over chicken and pour salsa on top. Don't stir.", "timer_sec": null },
+        { "text": "Seal. High pressure 19 min (altitude-adjusted).", "timer_sec": 1140 },
+        { "text": "Natural release 10 min, then quick release the rest.", "timer_sec": 600 },
+        { "text": "Shred with two forks right in the pot. Portion into 7 containers.", "timer_sec": null }
+      ],
+      "variants": [],
+      "per_serving": { "kcal": 330, "protein_g": 50, "carbs_g": 3, "fat_g": 13 },
+      "portion_notes": { "me": "2 palms", "son": "1 palm in a quesadilla" },
+      "swaps": [
+        { "label": "Ground turkey taco meat", "kcal": 330, "protein_g": 45, "carbs_g": 3, "fat_g": 15 },
+        { "label": "Rotisserie chicken, skin off", "kcal": 300, "protein_g": 48, "carbs_g": 0, "fat_g": 11 }
+      ],
+      "storage": "Fridge 4 days. Freeze up to 3 months."
+    },
+    {
+      "id": "salsa-chicken-bowl",
+      "name": "Salsa Chicken Burrito Bowl",
+      "tags": ["lunch", "uses-prep", "quick"],
+      "yield_servings": 1,
+      "active_min": 5,
+      "total_min": 5,
+      "ingredients": [
+        { "item": "IP salsa chicken (prepped)", "qty": 1, "unit": "serving", "section": "Other" },
+        { "item": "Cooked white rice", "qty": 1, "unit": "cup", "section": "Pantry" },
+        { "item": "Black beans, rinsed", "qty": 0.5, "unit": "cup", "section": "Pantry" },
+        { "item": "Romaine, chopped", "qty": 2, "unit": "cups", "section": "Produce" },
+        { "item": "Pico de gallo", "qty": 0.25, "unit": "cup", "section": "Produce" },
+        { "item": "Plain nonfat Greek yogurt (as sour cream)", "qty": 2, "unit": "tbsp", "section": "Dairy & Eggs" }
+      ],
+      "steps": [
+        { "text": "Microwave chicken, rice and beans together, covered, 2 min.", "timer_sec": 120 },
+        { "text": "Top with romaine, pico and yogurt.", "timer_sec": null }
+      ],
+      "variants": [
+        { "id": "hard", "label": "Hard day", "changes": "Rice 1½ cups.", "kcal": 800, "protein_g": 62, "carbs_g": 100, "fat_g": 16 },
+        { "id": "recovery", "label": "Recovery day", "changes": "Rice ½ cup, double the romaine.", "kcal": 600, "protein_g": 58, "carbs_g": 50, "fat_g": 16 }
+      ],
+      "per_serving": { "kcal": 700, "protein_g": 60, "carbs_g": 75, "fat_g": 16 },
+      "portion_notes": { "me": "2 palms chicken, 1 cup rice", "son": "Kid bowl: rice, chicken, cheese" },
+      "swaps": [
+        { "label": "Chipotle chicken bowl, no cheese/sour cream", "kcal": 720, "protein_g": 55, "carbs_g": 80, "fat_g": 20 }
+      ],
+      "storage": "Assemble fresh. Keep toppings separate if packing."
+    },
+    {
+      "id": "turkey-club-wraps",
+      "name": "Turkey Club Wraps",
+      "tags": ["lunch", "no-cook", "quick"],
+      "yield_servings": 1,
+      "active_min": 8,
+      "total_min": 8,
+      "ingredients": [
+        { "item": "Large low-carb tortillas", "qty": 2, "unit": "", "section": "Bakery" },
+        { "item": "Deli turkey breast", "qty": 8, "unit": "oz", "section": "Meat & Seafood" },
+        { "item": "Center-cut bacon, cooked", "qty": 3, "unit": "slices", "section": "Meat & Seafood" },
+        { "item": "Avocado", "qty": 0.5, "unit": "", "section": "Produce" },
+        { "item": "Swiss cheese", "qty": 1, "unit": "slice", "section": "Dairy & Eggs" },
+        { "item": "Romaine and tomato", "qty": null, "unit": "", "section": "Produce" }
+      ],
+      "steps": [
+        { "text": "Mash avocado across both tortillas.", "timer_sec": null },
+        { "text": "Layer turkey, bacon, cheese, lettuce and tomato. Roll tight and cut in half.", "timer_sec": null }
+      ],
+      "variants": [],
+      "per_serving": { "kcal": 850, "protein_g": 75, "carbs_g": 35, "fat_g": 45 },
+      "portion_notes": { "me": "2 wraps", "son": "1 wrap, fruit on the side" },
+      "swaps": [
+        { "label": "Subway 6\" turkey on wheat, double meat", "kcal": 480, "protein_g": 40, "carbs_g": 46, "fat_g": 8 }
+      ],
+      "storage": "Best fresh. Wrapped tight, fridge up to 1 day."
+    },
+    {
+      "id": "protein-overnight-oats",
+      "name": "Protein Overnight Oats",
+      "tags": ["breakfast", "batch", "no-cook"],
+      "yield_servings": 3,
+      "active_min": 10,
+      "total_min": 490,
+      "ingredients": [
+        { "item": "Old-fashioned oats", "qty": 2.25, "unit": "cups", "section": "Pantry" },
+        { "item": "Vanilla whey protein", "qty": 3, "unit": "scoops", "section": "Supplements" },
+        { "item": "Unsweetened almond milk", "qty": 3, "unit": "cups", "section": "Dairy & Eggs" },
+        { "item": "Chia seeds", "qty": 3, "unit": "tbsp", "section": "Pantry" },
+        { "item": "Frozen blueberries", "qty": 1.5, "unit": "cups", "section": "Frozen" }
+      ],
+      "steps": [
+        { "text": "In 3 jars, divide oats, protein and chia. Shake dry to mix.", "timer_sec": null },
+        { "text": "Add 1 cup almond milk to each jar. Stir well, scraping the bottom.", "timer_sec": null },
+        { "text": "Top with blueberries. Lid on, fridge overnight (at least 8 hours).", "timer_sec": null }
+      ],
+      "variants": [
+        { "id": "hard", "label": "Hard day", "changes": "Add a sliced banana in the morning.", "kcal": 620, "protein_g": 46, "carbs_g": 85, "fat_g": 12 }
+      ],
+      "per_serving": { "kcal": 520, "protein_g": 45, "carbs_g": 60, "fat_g": 12 },
+      "portion_notes": { "me": "1 jar", "son": null },
+      "swaps": [
+        { "label": "Kodiak protein oatmeal packet + 1 scoop whey", "kcal": 360, "protein_g": 38, "carbs_g": 32, "fat_g": 6 }
+      ],
+      "storage": "Fridge 4 days."
+    },
+    {
+      "id": "greek-yogurt-bowl",
+      "name": "Greek Yogurt Power Bowl",
+      "tags": ["snack", "pre-training", "no-cook", "quick"],
+      "yield_servings": 1,
+      "active_min": 3,
+      "total_min": 3,
+      "ingredients": [
+        { "item": "Plain nonfat Greek yogurt", "qty": 1.25, "unit": "cups", "section": "Dairy & Eggs" },
+        { "item": "Granola", "qty": 0.25, "unit": "cup", "section": "Pantry" },
+        { "item": "Strawberries, sliced", "qty": 0.5, "unit": "cup", "section": "Produce" },
+        { "item": "Honey", "qty": 1, "unit": "tsp", "section": "Pantry" }
+      ],
+      "steps": [
+        { "text": "Spoon yogurt into a bowl. Top with granola, berries and honey.", "timer_sec": null }
+      ],
+      "variants": [],
+      "per_serving": { "kcal": 350, "protein_g": 35, "carbs_g": 35, "fat_g": 8 },
+      "portion_notes": { "me": "1 bowl", "son": "Half bowl, extra berries" },
+      "swaps": [
+        { "label": "Fairlife protein shake + banana", "kcal": 255, "protein_g": 31, "carbs_g": 31, "fat_g": 3 },
+        { "label": "Cottage cheese 1 cup + peach", "kcal": 250, "protein_g": 28, "carbs_g": 20, "fat_g": 5 }
+      ],
+      "storage": "Assemble fresh."
+    },
+    {
+      "id": "sheet-pan-salmon",
+      "name": "Sheet-Pan Salmon, Potatoes & Broccoli",
+      "tags": ["dinner", "family", "oven"],
+      "yield_servings": 3,
+      "active_min": 15,
+      "total_min": 45,
+      "ingredients": [
+        { "item": "Salmon fillets", "qty": 1.5, "unit": "lb", "section": "Meat & Seafood" },
+        { "item": "Baby potatoes, halved", "qty": 1.5, "unit": "lb", "section": "Produce" },
+        { "item": "Broccoli florets", "qty": 1, "unit": "lb", "section": "Produce" },
+        { "item": "Olive oil", "qty": 1.5, "unit": "tbsp", "section": "Pantry" },
+        { "item": "Lemon", "qty": 1, "unit": "", "section": "Produce" },
+        { "item": "Garlic powder, salt, pepper", "qty": null, "unit": "", "section": "Pantry" }
+      ],
+      "steps": [
+        { "text": "Heat oven to 425°F. Line a sheet pan with foil.", "timer_sec": null },
+        { "text": "Toss potatoes with 1 tbsp oil and seasoning. Roast 20 min.", "timer_sec": 1200 },
+        { "text": "Push potatoes aside. Add salmon and broccoli, drizzle remaining oil, season, add lemon slices.", "timer_sec": null },
+        { "text": "Roast until salmon flakes, about 12 min (145°F inside).", "timer_sec": 720 },
+        { "text": "Rest 3 min, squeeze lemon over everything.", "timer_sec": 180 }
+      ],
+      "variants": [],
+      "per_serving": { "kcal": 620, "protein_g": 45, "carbs_g": 45, "fat_g": 26 },
+      "portion_notes": { "me": "1 fillet, 1 fist potatoes, 2 fists broccoli", "son": "Half a fillet, extra potatoes" },
+      "swaps": [
+        { "label": "Cod instead of salmon", "kcal": 470, "protein_g": 45, "carbs_g": 45, "fat_g": 10 }
+      ],
+      "storage": "Fridge 2 days. Don't freeze cooked salmon."
+    },
+    {
+      "id": "veggie-egg-scramble",
+      "name": "Veggie Egg Scramble",
+      "tags": ["breakfast", "quick", "stovetop"],
+      "yield_servings": 1,
+      "active_min": 10,
+      "total_min": 10,
+      "ingredients": [
+        { "item": "Eggs", "qty": 3, "unit": "", "section": "Dairy & Eggs" },
+        { "item": "Liquid egg whites", "qty": 0.75, "unit": "cup", "section": "Dairy & Eggs" },
+        { "item": "Spinach", "qty": 2, "unit": "cups", "section": "Produce" },
+        { "item": "Bell pepper, diced", "qty": 0.5, "unit": "", "section": "Produce" },
+        { "item": "Shredded cheddar", "qty": 2, "unit": "tbsp", "section": "Dairy & Eggs" },
+        { "item": "Salsa", "qty": 2, "unit": "tbsp", "section": "Pantry" }
+      ],
+      "steps": [
+        { "text": "Cook pepper in a nonstick pan over medium heat, 3 min.", "timer_sec": 180 },
+        { "text": "Add spinach, stir until wilted, about 1 min.", "timer_sec": 60 },
+        { "text": "Whisk eggs and whites, pour in, and stir gently until just set.", "timer_sec": null },
+        { "text": "Top with cheese and salsa.", "timer_sec": null }
+      ],
+      "variants": [],
+      "per_serving": { "kcal": 480, "protein_g": 42, "carbs_g": 20, "fat_g": 26 },
+      "portion_notes": { "me": "Full recipe", "son": "1 egg scrambled, toast" },
+      "swaps": [
+        { "label": "Egg-white bites (Starbucks, 2) + banana", "kcal": 275, "protein_g": 13, "carbs_g": 38, "fat_g": 8 }
+      ],
+      "storage": "Best fresh."
+    }
+  ],
+  "grocery": [
+    { "item": "Baby potatoes", "qty": 3, "unit": "lb", "section": "Produce", "recipe_ids": ["sheet-pan-salmon"], "optional": false, "note": "" },
+    { "item": "Broccoli florets", "qty": 2, "unit": "lb", "section": "Produce", "recipe_ids": ["sheet-pan-salmon"], "optional": false, "note": "" },
+    { "item": "Romaine hearts", "qty": 2, "unit": "packs", "section": "Produce", "recipe_ids": ["salsa-chicken-bowl", "turkey-club-wraps"], "optional": false, "note": "" },
+    { "item": "Spinach", "qty": 10, "unit": "oz", "section": "Produce", "recipe_ids": ["veggie-egg-scramble"], "optional": false, "note": "" },
+    { "item": "Bell peppers", "qty": 2, "unit": "", "section": "Produce", "recipe_ids": ["veggie-egg-scramble"], "optional": false, "note": "" },
+    { "item": "Avocados", "qty": 2, "unit": "", "section": "Produce", "recipe_ids": ["turkey-club-wraps"], "optional": false, "note": "" },
+    { "item": "Strawberries", "qty": 2, "unit": "lb", "section": "Produce", "recipe_ids": ["greek-yogurt-bowl"], "optional": false, "note": "" },
+    { "item": "Bananas", "qty": 4, "unit": "", "section": "Produce", "recipe_ids": ["protein-overnight-oats"], "optional": false, "note": "for hard days" },
+    { "item": "Lemons", "qty": 2, "unit": "", "section": "Produce", "recipe_ids": ["sheet-pan-salmon"], "optional": false, "note": "" },
+    { "item": "Pico de gallo", "qty": 16, "unit": "oz", "section": "Produce", "recipe_ids": ["salsa-chicken-bowl"], "optional": false, "note": "" },
+    { "item": "Chicken thighs, boneless skinless", "qty": 5, "unit": "lb", "section": "Meat & Seafood", "recipe_ids": ["ip-salsa-chicken"], "optional": false, "note": "family pack" },
+    { "item": "Salmon fillets", "qty": 3, "unit": "lb", "section": "Meat & Seafood", "recipe_ids": ["sheet-pan-salmon"], "optional": false, "note": "frozen individually wrapped is fine" },
+    { "item": "Deli turkey breast", "qty": 1.5, "unit": "lb", "section": "Meat & Seafood", "recipe_ids": ["turkey-club-wraps"], "optional": false, "note": "" },
+    { "item": "Center-cut bacon", "qty": 1, "unit": "pack", "section": "Meat & Seafood", "recipe_ids": ["turkey-club-wraps"], "optional": false, "note": "" },
+    { "item": "Plain nonfat Greek yogurt", "qty": 2, "unit": "32 oz tubs", "section": "Dairy & Eggs", "recipe_ids": ["greek-yogurt-bowl", "salsa-chicken-bowl"], "optional": false, "note": "" },
+    { "item": "Eggs", "qty": 18, "unit": "", "section": "Dairy & Eggs", "recipe_ids": ["veggie-egg-scramble"], "optional": false, "note": "" },
+    { "item": "Liquid egg whites", "qty": 32, "unit": "oz", "section": "Dairy & Eggs", "recipe_ids": ["veggie-egg-scramble"], "optional": false, "note": "" },
+    { "item": "Unsweetened almond milk", "qty": 0.5, "unit": "gal", "section": "Dairy & Eggs", "recipe_ids": ["protein-overnight-oats"], "optional": false, "note": "" },
+    { "item": "Swiss cheese slices", "qty": 1, "unit": "pack", "section": "Dairy & Eggs", "recipe_ids": ["turkey-club-wraps"], "optional": false, "note": "" },
+    { "item": "Frozen blueberries", "qty": 1, "unit": "bag", "section": "Frozen", "recipe_ids": ["protein-overnight-oats"], "optional": false, "note": "" },
+    { "item": "Old-fashioned oats", "qty": 1, "unit": "canister", "section": "Pantry", "recipe_ids": ["protein-overnight-oats"], "optional": false, "note": "" },
+    { "item": "Salsa verde", "qty": 16, "unit": "oz", "section": "Pantry", "recipe_ids": ["ip-salsa-chicken"], "optional": false, "note": "" },
+    { "item": "Black beans", "qty": 2, "unit": "cans", "section": "Pantry", "recipe_ids": ["salsa-chicken-bowl"], "optional": false, "note": "" },
+    { "item": "Jasmine rice", "qty": 1, "unit": "bag", "section": "Pantry", "recipe_ids": ["salsa-chicken-bowl"], "optional": false, "note": "check pantry first" },
+    { "item": "Granola", "qty": 1, "unit": "bag", "section": "Pantry", "recipe_ids": ["greek-yogurt-bowl"], "optional": true, "note": "lower-sugar kind" },
+    { "item": "Large low-carb tortillas", "qty": 1, "unit": "pack", "section": "Bakery", "recipe_ids": ["turkey-club-wraps"], "optional": false, "note": "" },
+    { "item": "Vanilla whey protein", "qty": 1, "unit": "tub", "section": "Supplements", "recipe_ids": ["protein-overnight-oats"], "optional": true, "note": "only if under 10 scoops left" },
+    { "item": "Creatine monohydrate", "qty": 1, "unit": "tub", "section": "Supplements", "recipe_ids": [], "optional": true, "note": "if running low" },
+    { "item": "Foil / freezer bags", "qty": null, "unit": "", "section": "Other", "recipe_ids": [], "optional": true, "note": "" }
+  ],
+  "prep": [
+    {
+      "date": "2026-09-27", "time": "12:30", "title": "Sunday batch prep",
+      "tasks": [
+        { "text": "IP salsa chicken (full batch)", "recipe_id": "ip-salsa-chicken", "active_min": 10, "keeps": "Fridge 4 days; freeze extras" },
+        { "text": "3 jars protein overnight oats", "recipe_id": "protein-overnight-oats", "active_min": 10, "keeps": "Fridge 4 days" },
+        { "text": "Cook 4 cups dry jasmine rice", "recipe_id": null, "active_min": 5, "keeps": "Fridge 5 days" },
+        { "text": "Wash and chop romaine, peppers", "recipe_id": null, "active_min": 10, "keeps": "Fridge 4 days with a paper towel" }
+      ]
+    },
+    {
+      "date": "2026-09-30", "time": "19:30", "title": "Midweek top-up",
+      "tasks": [
+        { "text": "3 more jars overnight oats", "recipe_id": "protein-overnight-oats", "active_min": 10, "keeps": "Fridge 4 days" },
+        { "text": "Move 2 salsa chicken portions from freezer to fridge", "recipe_id": "ip-salsa-chicken", "active_min": 1, "keeps": "Fridge 4 days once thawed" }
+      ]
+    }
+  ],
+  "reminders": [
+    { "date": "2026-09-27", "time": "09:00", "type": "shop", "title": "Grocery run", "body": "List is on the Grocery tab." },
+    { "date": "2026-09-27", "time": "20:00", "type": "thaw", "title": "Thaw salmon for Tuesday", "body": "Move 1 lb salmon from freezer to fridge." },
+    { "date": "2026-09-28", "time": "07:00", "type": "supplement", "title": "Creatine 5 g", "body": "With breakfast." },
+    { "date": "2026-09-29", "time": "07:00", "type": "supplement", "title": "Creatine 5 g", "body": "With breakfast." },
+    { "date": "2026-09-29", "time": "20:00", "type": "thaw", "title": "Thaw salmon for Thursday", "body": "Move 1 lb salmon from freezer to fridge." },
+    { "date": "2026-09-30", "time": "19:30", "type": "prep", "title": "Midweek top-up prep", "body": "See the Prep tab." },
+    { "date": "2026-10-01", "time": "13:00", "type": "hydrate", "title": "Water check", "body": "Aim for about half your water target by now on training days." },
+    { "date": "2026-10-02", "time": "20:00", "type": "thaw", "title": "Thaw salmon for Saturday", "body": "Move 1.5 lb salmon from freezer to fridge." },
+    { "date": "2026-10-03", "time": "20:00", "type": "thaw", "title": "Thaw salsa chicken", "body": "Move 2 portions from freezer to fridge for Monday." }
+  ],
+  "notes": "Sample plan for testing the app. Your real plan comes from your nutritionist. Priorities this week: protein at every meal, eat the pre-training snack 60–90 min before the gym, and get the water in on hard days."
+}
