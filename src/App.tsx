@@ -4,6 +4,7 @@ import { href, useRoute } from './lib/router';
 import { RecipeScreen } from './screens/Recipe';
 import { SettingsScreen } from './screens/Settings';
 import { WeekScreen } from './screens/Week';
+import { UpdateBanner } from './components/UpdateBanner';
 
 // Tabs appear here as each build phase lands.
 const TABS: { path: string; label: string; icon: ReactNode }[] = [
@@ -36,7 +37,10 @@ export function App() {
           </a>
         ))}
       </nav>
-      <main className="main">{node}</main>
+      <main className="main">
+        <UpdateBanner />
+        {node}
+      </main>
     </div>
   );
 }
