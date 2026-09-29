@@ -111,3 +111,13 @@ describe('parseAndValidate', () => {
     expect(r.ok).toBe(true);
   });
 });
+
+describe('slot uniqueness', () => {
+  it('rejects two meals with the same slot on one day', () => {
+    const b = clone();
+    b.days[0].meals[2].slot = 'lunch';
+    const r = validateBundle(b);
+    expect(r.ok).toBe(false);
+    expect(r.errors[0]).toMatch(/slot "lunch" is used by more than one meal/);
+  });
+});

@@ -155,3 +155,67 @@ export interface StoredBundle {
   imported_at: string; // ISO timestamp
   bundle: PlanBundle;
 }
+
+// ---------- Log (SPEC-logging.md §6) ----------
+
+export type EntryKind = 'planned' | 'unplanned';
+export type EntryStatus = 'as_planned' | 'portion' | 'swapped' | 'replaced' | 'skipped' | 'unplanned';
+export type MealType = 'meal' | 'snack';
+export type ItemSource = 'plan' | 'swap' | 'saved' | 'ai' | 'usda' | 'off' | 'portion' | 'manual';
+export type Confidence = 'low' | 'medium' | 'high';
+
+export interface Nutrition {
+  kcal: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  /** null when the source doesn't give fiber (plan bundles don't). */
+  fiber_g: number | null;
+}
+
+/**
+ * One food in an entry. Nutrition is for 1× of `portion`;
+ * what counts is nutrition × multiplier.
+ */
+export interface LogItem extends Nutrition {
+  name: string;
+  portion: string;
+  multiplier: number;
+  source: ItemSource;
+  source_ref: string | null;
+  confidence: Confidence | null;
+}
+
+export interface PlannedRef {
+  date: string;
+  slot: string;
+}
+
+export interface LogEntry {
+  id: string;
+  date: string; // YYYY-MM-DD
+  time: string; // HH:MM, 24-hour
+  kind: EntryKind;
+  planned_ref: PlannedRef | null;
+  status: EntryStatus;
+  meal_type: MealType;
+  description: string;
+  items: LogItem[];
+  /** Always computed from items (see computeTotals). */
+  totals: Nutrition;
+  needs_refine: boolean;
+  note: string;
+  created_at: string; // ISO timestamp
+  updated_at: string;
+}
+
+/** A favorite: logs in one tap from the Food Entry sheet. Nutrition is for 1× of `portion`. */
+export interface SavedFood extends Nutrition {
+  id: string;
+  name: string;
+  portion: string;
+  /** Where the numbers originally came from. */
+  origin: ItemSource;
+  created_at: string;
+  last_used_at: string;
+}

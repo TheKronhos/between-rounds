@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie';
-import type { PlanBundle, StoredBundle } from './types';
+import type { LogEntry, PlanBundle, SavedFood, StoredBundle } from './types';
 
 // All data lives in IndexedDB on this device. Nothing is sent anywhere.
 
@@ -8,15 +8,25 @@ export interface MetaRow {
   value: unknown;
 }
 
-class BetweenRoundsDB extends Dexie {
+export class BetweenRoundsDB extends Dexie {
   bundles!: EntityTable<StoredBundle, 'id'>;
   meta!: EntityTable<MetaRow, 'key'>;
+  logs!: EntityTable<LogEntry, 'id'>;
+  foods!: EntityTable<SavedFood, 'id'>;
 
-  constructor() {
-    super('between-rounds');
+  constructor(name = 'between-rounds') {
+    super(name);
+    // Schema history. Never edit a past version; add a new one.
+    // Dexie carries every existing table and row forward on upgrade.
     this.version(1).stores({
       bundles: '++id, plan_id, imported_at, valid_from, valid_to',
       meta: '&key',
+    });
+    // v2 (SPEC-logging.md): log entries and saved foods. No log data existed before v2,
+    // so there is nothing to transform; v1 plans and meta pass through untouched.
+    this.version(2).stores({
+      logs: '&id, date, updated_at',
+      foods: '&id, name, last_used_at',
     });
   }
 }

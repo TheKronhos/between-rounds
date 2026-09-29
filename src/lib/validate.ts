@@ -355,11 +355,17 @@ export function validateBundle(input: unknown): ValidationResult {
     if (day_type !== undefined && targetsRaw && !dayTypeIds.has(day_type)) {
       c.err(`${w}: day type "${day_type}" isn't defined in targets (defined: ${[...dayTypeIds].join(', ') || 'none'}).`);
     }
+    const slots = new Set<string>();
     const meals = (c.arr(raw, 'meals', w) ?? []).map((m, j) => {
       let wm = `${w}, meal #${j + 1}`;
       if (!isObj(m)) return void c.err(`${wm}: should be an object.`);
       const slot = c.str(m, 'slot', wm, { nonEmpty: true });
-      if (slot) wm = `${w}, ${slot}`;
+      if (slot) {
+        wm = `${w}, ${slot}`;
+        // Log entries point at a planned meal by date + slot, so slots must be unique per day.
+        if (slots.has(slot)) c.err(`${w}: the slot "${slot}" is used by more than one meal. Give each meal on a day its own slot name (e.g. "snack-1", "snack-2").`);
+        slots.add(slot);
+      }
       c.unknown(m, ['slot', 'time', 'recipe_id', 'variant', 'servings', ...MACRO_KEYS, 'son_plate', 'notes'], wm);
       const recipe_id = c.str(m, 'recipe_id', wm, { nonEmpty: true });
       recipeRef(recipe_id, wm);

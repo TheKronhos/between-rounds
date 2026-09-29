@@ -13,7 +13,7 @@ The app is a display and logging tool, not a decision-maker. All nutrition decis
 3. Validate every import. Check the schema and every cross-reference (recipe_id, section names, dates). On any error, reject the whole bundle, keep the current plan, and show a plain-English list of what's wrong.
 4. Neutral, non-judgmental design. No red "over budget" numbers, no streaks, no guilt copy, no daily weigh-in nags. Weight is shown as a 7-day and weekly average; the single daily number is visually de-emphasized.
 5. Kitchen-proof UI. Large tap targets (min 48px), big readable text, dark mode, and landscape two-pane on iPad.
-6. Health data stays on-device. No analytics, no accounts, no third-party calls.
+6. Health data stays on-device. The only outbound calls are food lookups (the food text or barcode only; never weight, logs, targets, or check-ins).
 7. Ask me before adding anything not in this spec. Propose it; don't build it.
 
 ## Tech approach
@@ -36,11 +36,7 @@ The app is a display and logging tool, not a decision-maker. All nutrition decis
 
 - A timeline of the day, with the day type shown at top ("Hard day", "Moderate day", "Recovery day").
 - Reminders from the bundle for today (thaw, prep, shop, supplement), each with a checkbox.
-- Planned meals at their times. Each has one-tap actions:
-  - Ate as planned
-  - Portion: ½× / 1× / 1.5×
-  - Swapped: pick from that recipe's swaps list, or enter a custom item
-  - Skipped
+- Planned meals at their times, with the card actions defined in `SPEC-logging.md` §1 (✓ Ate it, Ate something else, and a More menu with Portion / Swapped / Skipped).
 - A "Tomorrow needs" card showing tomorrow's reminders, so thaw tasks are visible the night before.
 - A training marker at the training time from settings (display only).
 - Water: +8 oz / +16 oz buttons, with a progress bar toward the day's target.
@@ -86,10 +82,7 @@ The app is a display and logging tool, not a decision-maker. All nutrition decis
 
 ### 6. Log and Progress
 
-- Add meal/snack, three ways:
-  1. Saved foods: my favorites library, one tap to log.
-  2. Hand-portion quick-add: steppers for palms of protein, fists of veg, cupped hands of carbs, thumbs of fat. The estimate uses the `portion_guide` factors from the bundle (never hardcoded).
-  3. Manual entry: name, kcal, protein, carbs, fat (optional), with an option to save as a favorite.
+- Adding meals and snacks, the Food Entry sheet, nutrition lookup, and the log entry data model are defined in `SPEC-logging.md`, which replaces the earlier "Add meal/snack" design here.
 - Edit or delete any log entry.
 - Weight:
   - optional morning entry
@@ -122,6 +115,8 @@ CHECK-IN → NUTRITION
 - Energy <1-5> | Hunger <1-5> | Sleep <1-5> | Training <1-5>
 - Notes: <free text from the check-in form>
 ```
+
+The planned-meal, unplanned-entry, and needs_refine lines are extended by `SPEC-logging.md` §7.
 
 Also offer a JSON export of the same data.
 
@@ -236,4 +231,4 @@ After each phase, tell me what to test on my phone and iPad before moving on.
 
 ## Out of scope for v1 (don't build unless I ask)
 
-Food databases or barcode scanning, cloud sync, accounts, AI features, automatic target changes, and integration with my training app.
+Cloud sync, accounts, automatic target changes, and integration with my training app. Only the lookups defined in SPEC-logging.md. No AI anywhere else in the app.
