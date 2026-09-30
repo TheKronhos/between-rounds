@@ -36,10 +36,13 @@ export default defineConfig({
         // Precache the whole app so every screen works with no signal.
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}'],
         navigateFallback: 'index.html',
+        // foods.json (the offline food table) is ~1.3 MB; default limit is 2 MB. Leave headroom.
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         cleanupOutdatedCaches: true,
       },
     }),
   ],
+  worker: { format: 'es' },
   test: {
     environment: 'node',
   },

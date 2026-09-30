@@ -9,11 +9,13 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc -b",
-    "icons": "pwa-assets-generator"
+    "icons": "pwa-assets-generator",
+    "foods": "node scripts/build-foods.mjs"
   },
   "dependencies": {
     "dexie": "^4.4.6",
     "dexie-react-hooks": "^4.4.0",
+    "minisearch": "^7.2.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

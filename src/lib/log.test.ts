@@ -78,7 +78,7 @@ describe('local search', () => {
   it('puts saved foods first and shows them with an empty query', () => {
     const food = { id: 'f1', name: 'Salsa chicken tacos', portion: '3 tacos', kcal: 500, protein_g: 40, carbs_g: 30, fat_g: 20, fiber_g: 6, origin: 'manual' as const, created_at: '', last_used_at: '2026-09-28' };
     const m = searchLocal('salsa', { foods: [food], recents: [], bundle });
-    expect(m[0].group).toBe('Saved foods');
+    expect(m[0].group).toBe('My foods');
     expect(m[0].item.source).toBe('saved');
     expect(searchLocal('', { foods: [food], recents: [], bundle })).toHaveLength(1);
     expect(recipe).toBeDefined();

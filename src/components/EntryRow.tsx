@@ -1,5 +1,5 @@
 import { num, time12 } from '../lib/format';
-import { SOURCE_LABEL, entryTitle, statusLabel } from '../lib/log';
+import { entryTitle, sourceLabel, statusLabel } from '../lib/log';
 import type { LogEntry } from '../lib/types';
 import { useEntrySheet } from './EntrySheetContext';
 import { IconChevron } from './Icons';
@@ -7,7 +7,7 @@ import { IconChevron } from './Icons';
 /** A logged entry. Tap to edit or delete. */
 export function EntryRow({ entry }: { entry: LogEntry }) {
   const open = useEntrySheet();
-  const sources = [...new Set(entry.items.map((i) => SOURCE_LABEL[i.source]))].join(', ');
+  const sources = [...new Set(entry.items.map(sourceLabel))].join(', ');
   return (
     <button className="entry-row" onClick={() => open({ mode: 'edit', entry })}>
       <span className="entry-main">

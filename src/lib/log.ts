@@ -171,13 +171,19 @@ export function statusLabel(e: LogEntry): string {
 export const SOURCE_LABEL: Record<LogItem['source'], string> = {
   plan: 'From plan',
   swap: 'Plan swap',
-  saved: 'Saved food',
+  saved: 'My food',
   ai: 'AI estimate',
   usda: 'USDA',
   off: 'Open Food Facts',
   portion: 'Hand portions',
   manual: 'Manual',
 };
+
+/** Source shown on an item. Offline food-table items say so (source_ref "sr:<fdcId>"). */
+export function sourceLabel(it: LogItem): string {
+  if (it.source === 'usda' && it.source_ref?.startsWith('sr:')) return 'USDA (offline)';
+  return SOURCE_LABEL[it.source];
+}
 
 export function entryTitle(e: LogEntry): string {
   if (e.items.length === 0) return e.description || e.planned_ref?.slot || 'Entry';
@@ -189,7 +195,7 @@ export function entryTitle(e: LogEntry): string {
 
 export interface Match {
   key: string;
-  group: 'Saved foods' | 'Recent' | 'Plan recipes';
+  group: 'My foods' | 'Recent' | 'Plan recipes';
   item: LogItem;
   detail: string;
   savedFoodId?: string;
@@ -263,11 +269,11 @@ export function searchLocal(
   const foods = src.foods.slice().sort((a, b) => b.last_used_at.localeCompare(a.last_used_at));
   for (const f of foods) {
     const s = tokens.length ? score(f.name, tokens) : 0;
-    if (s >= 0) add({ key: `f:${f.id}`, group: 'Saved foods', item: savedFoodItem(f), detail: f.portion, savedFoodId: f.id }, s, groups[0]);
+    if (s >= 0) add({ key: `f:${f.id}`, group: 'My foods', item: savedFoodItem(f), detail: f.portion, savedFoodId: f.id }, s, groups[0]);
   }
   src.recents.forEach((it, i) => {
     const s = tokens.length ? score(it.name, tokens) : 0;
-    if (s >= 0) add({ key: `r:${i}`, group: 'Recent', item: it, detail: it.portion || SOURCE_LABEL[it.source] }, s, groups[1]);
+    if (s >= 0) add({ key: `r:${i}`, group: 'Recent', item: it, detail: it.portion || sourceLabel(it) }, s, groups[1]);
   });
   if (tokens.length) {
     planItems(src.bundle).forEach(({ item, detail }, i) => {

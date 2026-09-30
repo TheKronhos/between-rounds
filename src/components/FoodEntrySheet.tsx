@@ -4,7 +4,7 @@ import { db, getActiveBundle, getBundleForDate } from '../lib/db';
 import { capitalize, num, time12, todayISO } from '../lib/format';
 import {
   PORTION_LABELS,
-  SOURCE_LABEL,
+  sourceLabel,
   canSaveFavorite,
   computeTotals,
   effective,
@@ -29,7 +29,11 @@ import {
 import { PORTION_KEYS, type LogEntry, type LogItem, type MealType, type PlanBundle } from '../lib/types';
 import { useOnline } from '../lib/useToday';
 import type { SheetRequest } from './EntrySheetContext';
-import { IconClose, IconMinus, IconPlus } from './Icons';
+import { nutritionFor, type FoodHit } from '../lib/foodTable';
+import { useFoodSearch } from '../lib/useFoodSearch';
+import { MyFoodForm, ServingPicker, type MyFoodDraft } from './FoodPicker';
+import { IconChevron, IconClose, IconMinus, IconPlus } from './Icons';
+import { NumField, TextField } from './Fields';
 import { useToast } from './Toast';
 
 const MULTS = [0.5, 1, 1.5, 2];
@@ -47,6 +51,8 @@ export function FoodEntrySheet({ request, onClose }: { request: SheetRequest; on
   const [text, setText] = useState(editing?.description ?? '');
   const [items, setItems] = useState<LogItem[]>(editing?.items ?? []);
   const [panel, setPanel] = useState<null | 'portion' | 'manual'>(null);
+  const [picking, setPicking] = useState<FoodHit | null>(null);
+  const [myFood, setMyFood] = useState<{ title: string; draft: MyFoodDraft } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -57,6 +63,10 @@ export function FoodEntrySheet({ request, onClose }: { request: SheetRequest; on
 
   const recents = useMemo(() => recentItems(recentLogs.filter((e) => e.id !== editing?.id)), [recentLogs, editing?.id]);
   const matches = useMemo(() => searchLocal(text, { foods, recents, bundle }), [text, foods, recents, bundle]);
+  const q = text.trim();
+  const table = useFoodSearch(picking || myFood ? '' : text);
+  // Nothing from my foods/plan, and the table has nothing or only any-word matches.
+  const weak = q !== '' && matches.length === 0 && (table.results.length === 0 || table.loose);
   const totals = computeTotals(items);
 
   // ---- sheet behavior: Android back button / Escape close it; page doesn't scroll behind it ----
@@ -88,7 +98,8 @@ export function FoodEntrySheet({ request, onClose }: { request: SheetRequest; on
     else onClose();
   };
 
-  const addItem = (it: LogItem) => setItems((xs) => [...xs, { ...it, multiplier: 1 }]);
+  /** Picks from lists start at 1×; the serving picker passes the amount you chose. */
+  const addItem = (it: LogItem, keepAmount = false) => setItems((xs) => [...xs, keepAmount ? it : { ...it, multiplier: 1 }]);
   const pickMatch = (m: Match) => {
     addItem(m.item);
     setText('');
@@ -220,7 +231,79 @@ export function FoodEntrySheet({ request, onClose }: { request: SheetRequest; on
             </section>
           )}
 
-          <MatchList matches={matches} query={text} onPick={pickMatch} />
+          {picking ? (
+            <ServingPicker
+              food={picking}
+              onBack={() => setPicking(null)}
+              onAdd={(it) => {
+                addItem(it, true);
+                setPicking(null);
+                setText('');
+              }}
+              onSaveAsMine={(draft) => {
+                setPicking(null);
+                setMyFood({ title: 'Save as my food', draft });
+              }}
+            />
+          ) : myFood ? (
+            <MyFoodForm
+              title={myFood.title}
+              draft={myFood.draft}
+              onCancel={() => setMyFood(null)}
+              onDone={(added) => {
+                setMyFood(null);
+                setText('');
+                if (added) addItem(added);
+                toast('Saved to My foods.');
+              }}
+            />
+          ) : (
+          <>
+          <MatchList matches={matches} onPick={pickMatch} />
+
+          {q && table.results.length > 0 && (
+            <section aria-label="USDA (offline)">
+              <h3 className="group-head">{weak ? 'Closest in the food table' : 'USDA (offline)'}</h3>
+              <ul className="match-list">
+                {table.results.map((f) => {
+                  const [label, grams] = f.portions[0];
+                  return (
+                    <li key={f.fdcId}>
+                      <button className="match" onClick={() => setPicking(f)}>
+                        <span className="match-text">
+                          <span className="match-name">{f.display}</span>
+                          <span className="match-detail">
+                            {label} · {num(nutritionFor(f, grams).kcal)} kcal · USDA (offline)
+                          </span>
+                        </span>
+                        <IconChevron />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+
+          {!q && matches.length === 0 && <p className="muted small match-empty">Your foods and recent entries will show here.</p>}
+          {q && table.status === 'loading' && matches.length === 0 && <p className="muted small match-empty">Loading the food table…</p>}
+          {q && table.status === 'error' && <p className="muted small match-empty">The food table couldn't load. Your foods, plan and the options below still work.</p>}
+          {q && weak && table.status !== 'loading' && (
+            <div className="create-food">
+              {table.results.length === 0 && <p className="muted small">No matches for "{q}".</p>}
+              <button
+                className="btn"
+                onClick={() =>
+                  setMyFood({
+                    title: 'Create food',
+                    draft: { name: q, portion: '1 serving', origin: 'manual', kcal: null, protein_g: null, carbs_g: null, fat_g: null, fiber_g: null },
+                  })
+                }
+              >
+                <IconPlus /> Create food "{q}"
+              </button>
+            </div>
+          )}
 
           <section className="tier4" aria-label="Other ways to add">
             <div className="tier4-buttons">
@@ -250,6 +333,8 @@ export function FoodEntrySheet({ request, onClose }: { request: SheetRequest; on
               />
             )}
           </section>
+          </>
+          )}
         </div>
 
         <footer className="sheet-foot">
@@ -285,14 +370,8 @@ function editedStatus(prev: LogEntry, items: LogItem[]): LogEntry['status'] {
 
 // ---------- pieces ----------
 
-function MatchList({ matches, query, onPick }: { matches: Match[]; query: string; onPick: (m: Match) => void }) {
-  if (!matches.length) {
-    return (
-      <p className="muted small match-empty">
-        {query.trim() ? 'No matches in your foods or plan.' : 'Your saved foods and recent entries will show here.'}
-      </p>
-    );
-  }
+function MatchList({ matches, onPick }: { matches: Match[]; onPick: (m: Match) => void }) {
+  if (!matches.length) return null;
   const groups: Record<string, Match[]> = {};
   for (const m of matches) (groups[m.group] ??= []).push(m);
   return (
@@ -331,7 +410,7 @@ function ItemEditor({ item, onChange, onRemove }: { item: LogItem; onChange: (it
         <div>
           <div className="item-name">{item.name}</div>
           <div className="small muted">
-            {[item.portion, SOURCE_LABEL[item.source]].filter(Boolean).join(' · ')}
+            {[item.portion, sourceLabel(item)].filter(Boolean).join(' · ')}
           </div>
         </div>
         <button className="btn btn-quiet icon-btn" onClick={onRemove} aria-label={`Remove ${item.name}`}>
@@ -339,7 +418,7 @@ function ItemEditor({ item, onChange, onRemove }: { item: LogItem; onChange: (it
         </button>
       </div>
       <div className="segmented mult" role="group" aria-label="Amount">
-        {MULTS.map((m) => (
+        {(MULTS.includes(item.multiplier) ? MULTS : [...MULTS, item.multiplier].sort((a, b) => a - b)).map((m) => (
           <button key={m} aria-pressed={item.multiplier === m} onClick={() => set({ multiplier: m })}>
             {multLabel(m)}
           </button>
@@ -437,36 +516,5 @@ function ManualPanel({ initialName, onAdd }: { initialName: string; onAdd: (it: 
       </button>
       {!ok && <p className="small muted" style={{ marginTop: 6 }}>Name and kcal are needed.</p>}
     </div>
-  );
-}
-
-function TextField({ label, value, onChange, wide }: { label: string; value: string; onChange: (v: string) => void; wide?: boolean }) {
-  return (
-    <label className={`field${wide ? ' wide' : ''}`}>
-      <span>{label}</span>
-      <input type="text" value={value} onChange={(e) => onChange(e.target.value)} />
-    </label>
-  );
-}
-
-/** Numeric field that allows a blank value while typing. Blank → null. Negative numbers are ignored. */
-function NumField({ label, value, onChange, optional }: { label: string; value: number | null; onChange: (v: number | null) => void; optional?: boolean }) {
-  const [s, setS] = useState(value === null ? '' : String(Math.round(value * 100) / 100));
-  return (
-    <label className="field">
-      <span>{label}</span>
-      <input
-        type="text"
-        inputMode="decimal"
-        value={s}
-        placeholder={optional ? '' : '0'}
-        onChange={(e) => {
-          const raw = e.target.value.replace(',', '.');
-          if (!/^\d*\.?\d*$/.test(raw)) return;
-          setS(raw);
-          onChange(raw === '' || raw === '.' ? null : Number(raw));
-        }}
-      />
-    </label>
   );
 }

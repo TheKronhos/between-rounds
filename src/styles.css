@@ -601,3 +601,31 @@ input.food-search { font-size: 1.15rem; min-height: 56px; }
 
 .date-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .date-nav-label { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+/* ---------- Tier 1b: food table serving picker ---------- */
+
+.back-btn { align-self: flex-start; padding: 0 8px 0 0; }
+.picker-name { font-size: 1.25rem; }
+.plain-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.plain-fieldset:disabled { opacity: 0.45; }
+.portion-list { display: flex; flex-direction: column; gap: 6px; }
+.portion-opt {
+  min-height: var(--tap);
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.portion-opt[aria-pressed='true'] { border: 2px solid var(--accent); background: var(--accent-soft); font-weight: 650; }
+.count-row { display: grid; grid-template-columns: 1fr 88px; gap: 10px; }
+.count-field input { text-align: center; font-size: 1.15rem; font-weight: 700; }
+.preview { background: var(--surface-2); border-radius: var(--radius-sm); padding: 12px 14px; font-variant-numeric: tabular-nums; }
+.preview-amount { color: var(--text-muted); font-size: 0.9rem; }
+.preview-kcal { font-size: 1.5rem; font-weight: 700; }
+.picker-actions { display: flex; flex-direction: column; gap: 10px; }
+.picker-actions .btn-primary { min-height: 56px; font-size: 1.05rem; }
+.create-food { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
