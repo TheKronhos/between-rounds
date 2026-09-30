@@ -41,9 +41,10 @@ This is one screen with one text box at the top, plus a barcode button. Sources 
 - One tap adds a match.
 
 **Tier 1b: Offline food table (offline, instant)**
-- **Data:** USDA FoodData Central **SR Legacy** (public domain / CC0), downloaded at build time by `npm run foods` (`scripts/build-foods.mjs`) into a compact `public/foods.json` that ships with the app. It is never fetched from USDA at runtime. The generated file is committed so deploys don't depend on USDA's servers.
+- **Data:** two USDA FoodData Central datasets, both public domain (CC0): **SR Legacy** (basic foods and ingredients) and **FNDDS survey foods** (foods as Americans report eating them, including mixed dishes, dips and restaurant items). Both are downloaded at build time by `npm run foods` (`scripts/build-foods.mjs`) into a compact `public/foods.json` that ships with the app. It is never fetched from USDA at runtime. The generated file is committed so deploys don't depend on USDA's servers.
   - Per food: `fdcId`, a cleaned short display name (the original USDA name is kept for search and shown in small text), category, per-100 g kcal / protein / carbs / fat / fiber (fiber null when USDA has none), and all household portions as `[label, grams]`, most common first, plus "1 oz".
-  - Baby foods are excluded; everything else is kept (about 7,450 foods, ~0.25 MB compressed). If the compressed file ever exceeds ~5 MB, the build stops and lists categories by size so I can choose what to trim.
+  - Foods with the same USDA name in both datasets are merged into one entry (SR Legacy's numbers, with the portions of both). FNDDS's unspecified-amount portion is shown as "Typical amount", ranked below household units.
+  - Baby foods, infant formula and human milk are excluded; everything else is kept (about 12,600 foods, ~0.42 MB compressed). If the compressed file ever exceeds ~5 MB, the build stops and lists categories by size so I can choose what to trim.
   - The service worker precaches `foods.json`, so it works fully offline.
 - **Search:** one search box, ranked: My foods and recent entries first, then plan recipes/variants/swaps, then the food table.
   - Fuzzy and word-order independent ("cheddar cheese" finds "Cheese, cheddar"), tolerant of typos and plurals. MiniSearch, with the index built in a Web Worker so typing stays instant.
@@ -54,7 +55,7 @@ This is one screen with one text box at the top, plus a barcode button. Sources 
 - **My foods:**
   - If nothing matches (or the table only has partial-word matches), show **Create food**: name, serving label, and kcal / protein / carbs / fat per serving. It saves to My foods (and can add to the entry), and shows first in future searches.
   - Every table result offers **Save as my food**, prefilled with the chosen amount, so I can rename it or fix the serving (e.g. "My PB & honey snack").
-- Logged items use `source: "usda"` with `source_ref: "sr:<fdcId>"`; nutrition is per one household portion and the count is the multiplier.
+- Logged items use `source: "usda"` with `source_ref: "sr:<fdcId>"` or `"fndds:<fdcId>"`; nutrition is per one household portion and the count is the multiplier.
 
 **Tier 2: "Describe it" (online, AI estimate)**
 - Below the local matches, show a button: **Estimate "‹what I typed›"**.
@@ -137,7 +138,7 @@ Round kcal to the nearest 5 and grams to whole numbers. Do not give advice, judg
       "multiplier": 1,
       "kcal": 620, "protein_g": 26, "carbs_g": 68, "fat_g": 26, "fiber_g": 4,
       "source": "plan | swap | saved | ai | usda | off | portion | manual",
-      "source_ref": "recipe id, USDA fdcId (\"sr:<fdcId>\" for the offline table), barcode, or null",
+      "source_ref": "recipe id, USDA fdcId (\"sr:<fdcId>\" or \"fndds:<fdcId>\" for the offline table), barcode, or null",
       "confidence": "low | medium | high | null"
     }
   ],
@@ -177,7 +178,7 @@ Add these lines to the CHECK-IN → NUTRITION block:
 ## Build order
 
 1. Card actions, the "+ Add meal or snack" button, and the Food Entry sheet with Tier 1 (local search) and Tier 4 (quick-add and manual), plus the data model migration.
-1b. Tier 1b: offline food table (SR Legacy), serving picker, and My foods (Create food, Save as my food).
+1b. Tier 1b: offline food table (SR Legacy + FNDDS), serving picker, and My foods (Create food, Save as my food).
 2. Tier 2: AI "Describe it".
 3. Tier 3: USDA search and barcode scanning.
 4. The offline refine queue, favorites management, and the check-in export changes.

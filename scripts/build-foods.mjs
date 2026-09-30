@@ -1,40 +1,59 @@
 #!/usr/bin/env node
-// Builds public/foods.json (the offline food table) from USDA FoodData Central SR Legacy.
-// Run by hand when the source changes:  npm run foods
+// Builds public/foods.json (the offline food table) from two USDA FoodData Central datasets:
+//   - SR Legacy (April 2018): basic foods and ingredients, lab-analyzed
+//   - FNDDS / Survey foods (October 2024): foods as Americans report eating them,
+//     including mixed dishes, dips and restaurant items
+// Both are public domain (CC0 1.0).
+//
+// Run by hand when a source changes:  npm run foods
 // The app never fetches USDA data at runtime; it ships this generated file and the
 // service worker precaches it. The generated file is committed so deploys don't
 // depend on USDA's servers.
-//
-// Source: USDA FoodData Central, SR Legacy (April 2018). Public domain (CC0 1.0).
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { EXCLUDED_CATEGORIES, disambiguate, toRow } from './foods-transform.mjs';
+import { DATASETS, categoryOf, disambiguate, isExcludedCategory, mergeRows, toRow } from './foods-transform.mjs';
 
-const URL = 'https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_json_2018-04.zip';
+const SOURCES = [
+  {
+    code: 'sr',
+    label: 'SR Legacy (2018-04)',
+    url: 'https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_json_2018-04.zip',
+    key: 'SRLegacyFoods',
+  },
+  {
+    code: 'fndds',
+    label: 'FNDDS survey foods (2024-10)',
+    url: 'https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_survey_food_json_2024-10-31.zip',
+    key: 'SurveyFoods',
+  },
+];
+
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const cache = join(root, '.cache', 'usda');
 const out = join(root, 'public', 'foods.json');
 const SIZE_LIMIT = 5 * 1024 * 1024; // compressed
 
-mkdirSync(cache, { recursive: true });
-const zip = join(cache, 'sr_legacy.zip');
-if (!existsSync(zip)) {
-  console.log(`Downloading ${URL}`);
-  const res = await fetch(URL);
-  if (!res.ok) throw new Error(`Download failed: HTTP ${res.status}`);
-  writeFileSync(zip, Buffer.from(await res.arrayBuffer()));
-}
-let jsonFile = readdirSync(cache).find((f) => f.endsWith('.json'));
-if (!jsonFile) {
-  execFileSync('unzip', ['-o', '-q', zip, '-d', cache]);
-  jsonFile = readdirSync(cache).find((f) => f.endsWith('.json'));
+async function load(src) {
+  const dir = join(root, '.cache', 'usda', src.code);
+  mkdirSync(dir, { recursive: true });
+  const zip = join(dir, 'data.zip');
+  if (!existsSync(zip)) {
+    console.log(`Downloading ${src.url}`);
+    const res = await fetch(src.url);
+    if (!res.ok) throw new Error(`Download failed: HTTP ${res.status}`);
+    writeFileSync(zip, Buffer.from(await res.arrayBuffer()));
+  }
+  let json = readdirSync(dir).find((f) => f.endsWith('.json'));
+  if (!json) {
+    execFileSync('unzip', ['-o', '-q', zip, '-d', dir]);
+    json = readdirSync(dir).find((f) => f.endsWith('.json'));
+  }
+  return JSON.parse(readFileSync(join(dir, json), 'utf8'))[src.key];
 }
 
-const { SRLegacyFoods: foods } = JSON.parse(readFileSync(join(cache, jsonFile), 'utf8'));
 const categories = [];
 const catIndex = (c) => {
   let i = categories.indexOf(c);
@@ -42,21 +61,30 @@ const catIndex = (c) => {
   return i;
 };
 
-const kept = foods.filter((f) => !EXCLUDED_CATEGORIES.includes(f.foodCategory?.description));
-const rows = kept.map((f) => toRow(f, catIndex));
+const perSource = [];
+for (const src of SOURCES) {
+  const foods = await load(src);
+  const kept = foods.filter((f) => !isExcludedCategory(categoryOf(f)));
+  const rows = kept.map((f) => toRow(f, catIndex, DATASETS.indexOf(src.code)));
+  console.log(`${src.label}: ${rows.length} kept of ${foods.length}`);
+  perSource.push(rows);
+}
+
+const { rows, merged } = mergeRows(perSource[0], perSource[1], (i) => categories[i]);
+console.log(`Merged ${merged} foods that appear in both; ${rows.length} total`);
 disambiguate(rows);
 rows.sort((a, b) => a[1].localeCompare(b[1]));
 
 const payload = {
-  source: 'USDA FoodData Central, SR Legacy (2018-04). Public domain (CC0 1.0).',
-  fields: ['fdcId', 'display', 'name', 'category', 'kcal', 'protein_g', 'carbs_g', 'fat_g', 'fiber_g', 'portions'],
+  source: `USDA FoodData Central: ${SOURCES.map((s) => s.label).join('; ')}. Public domain (CC0 1.0).`,
+  fields: ['fdcId', 'display', 'name', 'category', 'kcal', 'protein_g', 'carbs_g', 'fat_g', 'fiber_g', 'portions', 'dataset'],
+  datasets: DATASETS,
   per: '100 g',
   categories,
   foods: rows,
 };
 const text = JSON.stringify(payload);
 const gz = gzipSync(text).length;
-console.log(`Foods: ${rows.length} kept of ${foods.length} (excluded: ${EXCLUDED_CATEGORIES.join(', ')})`);
 console.log(`Size: ${(text.length / 1024 / 1024).toFixed(2)} MB raw, ${(gz / 1024 / 1024).toFixed(2)} MB gzip`);
 if (gz > SIZE_LIMIT) {
   console.error('Over the ~5 MB compressed limit. Categories by compressed size:');

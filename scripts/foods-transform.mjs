@@ -1,7 +1,16 @@
 // Pure helpers that turn USDA FoodData Central SR Legacy records into the compact
 // offline food table (public/foods.json). Used by scripts/build-foods.mjs; unit-tested.
 
-export const EXCLUDED_CATEGORIES = ['Baby Foods'];
+// SR Legacy "Baby Foods"; FNDDS "Baby food: …", "Baby juice", "Baby water", "Formula, …", "Human milk".
+const EXCLUDED = /^(baby foods?\b|baby (juice|water)$|formula, |human milk$|infant formula)/i;
+export const isExcludedCategory = (category) => EXCLUDED.test(category ?? '');
+
+/** SR Legacy has foodCategory; FNDDS (survey foods) has a WWEIA category. */
+export const categoryOf = (food) =>
+  food.foodCategory?.description ?? food.wweiaFoodCategory?.wweiaFoodCategoryDescription ?? 'Other';
+
+/** Dataset codes stored in each row and used in log items' source_ref ("sr:<fdcId>", "fndds:<fdcId>"). */
+export const DATASETS = ['sr', 'fndds'];
 
 const NUTRIENT = { kcal: '208', protein: '203', fat: '204', carbs: '205', fiber: '291' };
 
@@ -32,6 +41,7 @@ const NOISE = [
   /^includes .*$/i,
   /^regular pack$/i,
   /^NFS$/,
+  /^NS as to .*$/i,
   /^trimmed to .*fat$/i,
   /^imported$/i,
   /^domestic$/i,
@@ -132,6 +142,11 @@ export function formatAmount(n) {
 }
 
 export function portionLabel(p) {
+  // FNDDS describes portions in words; its "modifier" is an internal code, not a label.
+  if (p.portionDescription) {
+    if (/^quantity not specified$/i.test(p.portionDescription)) return 'Typical amount';
+    return p.portionDescription.replace(/\s{2,}/g, ' ').trim();
+  }
   const unit = p.measureUnit?.name && p.measureUnit.name !== 'undetermined' ? p.measureUnit.name : '';
   const mod = (p.modifier ?? '')
     .replace(/\(\s+/g, '(')
@@ -143,7 +158,13 @@ export function portionLabel(p) {
   return [amount, unit, mod].filter(Boolean).join(' ');
 }
 
-const SMALL_MEASURE_FIRST = new Set(['Fats and Oils', 'Spices and Herbs', 'Soups, Sauces, and Gravies', 'Sweets']);
+// Categories eaten by the spoonful (SR Legacy and FNDDS/WWEIA names).
+const SMALL_MEASURE_FIRST = new Set([
+  'Fats and Oils', 'Spices and Herbs', 'Soups, Sauces, and Gravies', 'Sweets',
+  'Dips, gravies, other sauces', 'Mustard and other condiments', 'Ketchup', 'Salad dressings and vegetable oils',
+  'Butter and animal fats', 'Margarine', 'Sugars and honey', 'Jams, syrups, toppings',
+  'Cream cheese, sour cream, whipped cream', 'Peanut butter and other nut butters',
+]);
 
 /**
  * Rank a portion for "most common" (the default). USDA doesn't publish usage frequency,
@@ -152,6 +173,10 @@ const SMALL_MEASURE_FIRST = new Set(['Fats and Oils', 'Spices and Herbs', 'Soups
  */
 export function portionRank(label, category, kcal = 0) {
   const l = label.toLowerCase();
+  const spoonFirst = SMALL_MEASURE_FIRST.has(category);
+  if (l === 'typical amount') return 5.5; // FNDDS survey default: real, but not a household unit
+  if (/\b(cubic|surface) inch\b/.test(l)) return 6;
+  if (spoonFirst && /\b(tbsp|tsp|tablespoons?|teaspoons?)\b/.test(l)) return 1.8;
   // A cup of something very calorie-dense (nut butter, nuts, oil) is rarely what anyone eats.
   if (/\bcups?\b/.test(l) && kcal > 450) return 6.5;
   if (/nlea serving/.test(l)) return 1.5;
@@ -162,7 +187,7 @@ export function portionRank(label, category, kcal = 0) {
   if (/\b(slice|piece|item|each|patty|link|bar|cookie|muffin|packet|package|container|bottle|can|fruit|egg|breast|thigh|drumstick|wing|fillet|chop|steak|sandwich|burrito|taco|pizza|roll|bagel|biscuit|tortilla|pancake|waffle|donut|stalk|spear|leaf|clove|large|small|extra large)\b/.test(l)) return 2;
   const cupFirst = !SMALL_MEASURE_FIRST.has(category);
   if (/\bcups?\b/.test(l)) return cupFirst ? 3 : 4;
-  if (/\b(tbsp|tsp)\b/.test(l)) return cupFirst ? 4 : 3;
+  if (/\b(tbsp|tsp|tablespoons?|teaspoons?)\b/.test(l)) return cupFirst ? 4 : 3;
   if (/\b(lb|pound)\b/.test(l)) return 7;
   if (/\boz\b/.test(l) && !/fl oz/.test(l)) return 6;
   return 5;
@@ -190,9 +215,9 @@ export function portions(food, category, kcalPer100 = 0) {
 
 // ---------- whole record ----------
 
-/** Compact row: [fdcId, display, name, categoryIndex, kcal, protein, carbs, fat, fiber|null, portions] */
-export function toRow(food, categoryIndex) {
-  const cat = food.foodCategory?.description ?? 'Other';
+/** Compact row: [fdcId, display, name, categoryIndex, kcal, protein, carbs, fat, fiber|null, portions, dataset] */
+export function toRow(food, categoryIndex, dataset = 0) {
+  const cat = categoryOf(food);
   const n = nutrientsPer100g(food);
   return [
     food.fdcId,
@@ -205,5 +230,31 @@ export function toRow(food, categoryIndex) {
     n.fat_g,
     n.fiber_g,
     portions(food, cat, n.kcal),
+    dataset,
   ];
+}
+
+const normName = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+/**
+ * Combine datasets. When two foods have the same USDA name, keep the first (SR Legacy)
+ * and add any household portions only the other one has. Returns the merged rows.
+ */
+export function mergeRows(primary, secondary, categoryName = () => '') {
+  const byName = new Map(primary.map((r) => [normName(r[2]), r]));
+  const out = [...primary];
+  let merged = 0;
+  for (const r of secondary) {
+    const hit = byName.get(normName(r[2]));
+    if (!hit) {
+      out.push(r);
+      continue;
+    }
+    merged++;
+    const have = new Set(hit[9].map(([l]) => l.toLowerCase()));
+    const extra = r[9].filter(([l]) => !have.has(l.toLowerCase()) && l !== '1 oz');
+    const rank = ([label, grams]) => portionRank(label, categoryName(hit[3]), (hit[4] * grams) / 100);
+    hit[9] = [...hit[9], ...extra].sort((a, b) => rank(a) - rank(b)); // stable: USDA order within a rank
+  }
+  return { rows: out, merged };
 }

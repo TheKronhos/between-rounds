@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 // @ts-expect-error plain JS build script
-import { disambiguate, displayName, formatAmount, portionLabel, portions } from './foods-transform.mjs';
+import { disambiguate, displayName, formatAmount, isExcludedCategory, mergeRows, portionLabel, portions } from './foods-transform.mjs';
 
 const p = (amount: number, modifier: string, gramWeight: number, sequenceNumber: number) => ({
   amount, modifier, gramWeight, sequenceNumber, measureUnit: { name: 'undetermined' },
@@ -58,5 +58,40 @@ describe('disambiguate', () => {
     disambiguate(rows);
     expect(new Set(rows.map((r) => r[1])).size).toBe(4);
     expect(rows[0][1]).toMatch(/ham/);
+  });
+});
+
+describe('FNDDS support', () => {
+  it('uses the portion description, not the internal code, and names the survey default', () => {
+    expect(portionLabel({ portionDescription: '1 individual container', modifier: '90000', gramWeight: 70 })).toBe('1 individual container');
+    expect(portionLabel({ portionDescription: 'Quantity not specified', modifier: '90000', gramWeight: 60 })).toBe('Typical amount');
+  });
+
+  it('puts spoonfuls first for dips and sauces', () => {
+    const food = { foodPortions: [
+      { portionDescription: 'Quantity not specified', gramWeight: 60, sequenceNumber: 1 },
+      { portionDescription: '1 individual container', gramWeight: 70, sequenceNumber: 2 },
+      { portionDescription: '1 tablespoon', gramWeight: 15, sequenceNumber: 3 },
+    ] };
+    expect(portions(food, 'Dips, gravies, other sauces', 91)[0][0]).toBe('1 tablespoon');
+  });
+
+  it('excludes baby food, formula and human milk from both datasets', () => {
+    for (const c of ['Baby Foods', 'Baby food: fruit', 'Baby juice', 'Baby water', 'Formula, ready-to-feed', 'Human milk']) {
+      expect(isExcludedCategory(c)).toBe(true);
+    }
+    expect(isExcludedCategory('Dips, gravies, other sauces')).toBe(false);
+    expect(isExcludedCategory('Beverages')).toBe(false);
+  });
+
+  it('merges same-named foods, keeping the first and adding missing portions', () => {
+    const a = [[1, 'Eggnog', 'Eggnog', 0, 88, 4.5, 8, 4, 0, [['1 cup', 254], ['1 oz', 28.4]], 0]];
+    const b = [[2, 'Eggnog', 'Eggnog', 1, 90, 4, 9, 4, 0, [['1 punch cup', 125], ['1 cup', 250], ['1 oz', 28.4]], 1],
+               [3, 'Tzatziki dip', 'Tzatziki dip', 1, 91, 5, 4, 6, 0, [['1 tablespoon', 15]], 1]];
+    const { rows, merged } = mergeRows(a, b);
+    expect(merged).toBe(1);
+    expect(rows).toHaveLength(2);
+    expect(rows[0][0]).toBe(1);
+    expect(rows[0][9].map((p: [string, number]) => p[0])).toEqual(['1 cup', '1 punch cup', '1 oz']);
   });
 });

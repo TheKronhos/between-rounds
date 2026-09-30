@@ -179,9 +179,9 @@ export const SOURCE_LABEL: Record<LogItem['source'], string> = {
   manual: 'Manual',
 };
 
-/** Source shown on an item. Offline food-table items say so (source_ref "sr:<fdcId>"). */
+/** Source shown on an item. Offline food-table items say so (source_ref "sr:<fdcId>" or "fndds:<fdcId>"). */
 export function sourceLabel(it: LogItem): string {
-  if (it.source === 'usda' && it.source_ref?.startsWith('sr:')) return 'USDA (offline)';
+  if (it.source === 'usda' && /^(sr|fndds):/.test(it.source_ref ?? '')) return 'USDA (offline)';
   return SOURCE_LABEL[it.source];
 }
 
